@@ -39,8 +39,6 @@ fn day1() {
                     cal_vec[0].1 = pat.1;
                 }
             }
-        }
-        for pat in &model {
             if let Some(index) = line.rfind(pat.0) {
                 if index >= cal_vec[1].0 {
                     cal_vec[1].0 = index;
