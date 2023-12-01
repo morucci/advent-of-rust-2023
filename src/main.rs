@@ -31,7 +31,7 @@ fn day1() {
     ];
 
     for line in content.lines() {
-        let mut cal_vec = vec![(99999, 'x'), (0, 'x')];
+        let mut cal_vec = vec![(usize::MAX, 'x'), (usize::MIN, 'x')];
         for pat in &model {
             if let Some(index) = line.find(pat.0) {
                 if index < cal_vec[0].0 {
