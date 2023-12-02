@@ -14,6 +14,7 @@ fn day2() {
     let model = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
 
     let mut possible_game_sum: u32 = 0;
+    let mut possible_min_game_sum: u32 = 0;
 
     for line in content.lines() {
         let mut game_ok = true;
@@ -23,6 +24,7 @@ fn day2() {
             let v: Vec<&str> = s1[0].split(' ').collect();
             v[1].trim().parse().unwrap()
         };
+        let mut min_possible = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
         let sets: Vec<&str> = s1[1].split(';').collect();
 
         for set in sets {
@@ -33,6 +35,13 @@ fn day2() {
                 let color = cube[1].trim();
                 let count: u32 = cube[0].trim().parse().unwrap();
                 println!("game_id: {game_id} -> color: {color}: {count}");
+
+                // Fill min_possible
+                if let Some(min_val) = min_possible.get(color) {
+                    if min_val < &count {
+                        *min_possible.get_mut(color).unwrap() = count;
+                    }
+                };
 
                 // Check cube with model
                 if let Some(m_count) = model.get(color) {
@@ -47,6 +56,16 @@ fn day2() {
             }
         }
 
+        let mut product = 1;
+        for v in min_possible.values() {
+            if *v == 0 as u32 {
+                continue;
+            }
+            product = product * v
+        }
+
+        possible_min_game_sum = possible_min_game_sum + product;
+
         if !game_ok {
             println!("This game is not possible");
         } else {
@@ -55,7 +74,8 @@ fn day2() {
         };
     }
 
-    println!("result: {possible_game_sum}");
+    println!("result part1: {possible_game_sum}");
+    println!("result part2: {possible_min_game_sum}");
 }
 
 fn _day1() {
