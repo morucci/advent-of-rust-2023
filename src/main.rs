@@ -1,11 +1,65 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 fn main() {
-    day1();
+    // day1();
+    day2();
 }
 
-fn day1() {
-    let content = fs::read_to_string("input1.txt").expect("Unable to read the input file");
+fn load_file(input_name: &str) -> String {
+    fs::read_to_string(input_name).expect("Unable to read the input file")
+}
+
+fn day2() {
+    let content = load_file("input2.txt");
+    let model = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
+
+    let mut possible_game_sum: u32 = 0;
+
+    for line in content.lines() {
+        let mut game_ok = true;
+        println!("{line}");
+        let s1: Vec<&str> = line.split(':').collect();
+        let game_id: u32 = {
+            let v: Vec<&str> = s1[0].split(' ').collect();
+            v[1].trim().parse().unwrap()
+        };
+        let sets: Vec<&str> = s1[1].split(';').collect();
+
+        for set in sets {
+            println!("set: {:?}", set);
+            let cubes_s: Vec<&str> = set.split(',').collect();
+            for cube_s in cubes_s {
+                let cube: Vec<&str> = cube_s.trim().split(' ').collect();
+                let color = cube[1].trim();
+                let count: u32 = cube[0].trim().parse().unwrap();
+                println!("game_id: {game_id} -> color: {color}: {count}");
+
+                // Check cube with model
+                if let Some(m_count) = model.get(color) {
+                    if count > *m_count {
+                        // color count is above model's color
+                        game_ok = false;
+                    }
+                } else {
+                    // Color does not exist in the model
+                    game_ok = false;
+                }
+            }
+        }
+
+        if !game_ok {
+            println!("This game is not possible");
+        } else {
+            println!("This game is possible");
+            possible_game_sum = possible_game_sum + game_id;
+        };
+    }
+
+    println!("result: {possible_game_sum}");
+}
+
+fn _day1() {
+    let content = load_file("input1.txt");
 
     let mut calibrations: Vec<u32> = vec![];
 
